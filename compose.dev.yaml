@@ -1,6 +1,7 @@
 services:
   web:
     image: nginx:latest # Using the default Nginx image with custom configuration.
+    container_name: nginx
     volumes:
       # Mount the application code for live updates
       - ./:/var/www
@@ -32,6 +33,7 @@ services:
         XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY:-DOCKER}
         XDEBUG_LOG: /dev/stdout
         XDEBUG_LOG_LEVEL: 0
+    container_name: php-fpm
     env_file:
       # Load the environment variables from the Laravel application
       - .env
@@ -46,7 +48,7 @@ services:
         condition: service_started  # Wait for postgres to start
 
   workspace:
-   # For the workspace service, we will also create a custom image to install and setup all the necessary stuff.
+    # For the workspace service, we will also create a custom image to install and setup all the necessary stuff.
     build:
       context: .
       dockerfile: ./docker/development/workspace/Dockerfile
@@ -59,6 +61,7 @@ services:
         XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY:-DOCKER}
         XDEBUG_LOG: /dev/stdout
         XDEBUG_LOG_LEVEL: 0
+    container_name: workspace
     ports:
       - '${VITE_PORT:-5173}:5173'
     tty: true  # Enables an interactive terminal
@@ -67,11 +70,13 @@ services:
       - .env
     volumes:
       - ./:/var/www
+    working_dir: /var/www
     networks:
       - laravel-development
 
   postgres:
     image: postgres:16
+    container_name: postgres
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     environment:
@@ -83,8 +88,35 @@ services:
     networks:
       - laravel-development
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    user: root
+    volumes:
+      - ./docker/development/pgadmin/servers.json:/pgadmin4/servers.json
+    depends_on:
+      - postgres
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+      PGADMIN_DISABLE_POSTFIX: 'True'
+    entrypoint: >
+      /bin/sh -c "
+      echo postgres:5432:app:laravel:secret > /var/lib/pgadmin/pg.pass;
+      chown pgadmin:root /var/lib/pgadmin/pg.pass;
+      chmod 600 /var/lib/pgadmin/pg.pass;
+      /entrypoint.sh
+      "
+    networks:
+      - laravel-development
+
   redis:
     image: redis:alpine
+    container_name: redis
     networks:
       - laravel-development
 

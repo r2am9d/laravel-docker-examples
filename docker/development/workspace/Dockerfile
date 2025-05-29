@@ -64,7 +64,7 @@ RUN if getent group ${GID}; then \
 # Switch to the non-root user to install NVM and Node.js
 USER www
 
-# Install NVM (Node Version Manager) as the www user
+# Install NVM (Node Version Manager)
 RUN export NVM_DIR="$HOME/.nvm" && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash && \
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
@@ -72,10 +72,11 @@ RUN export NVM_DIR="$HOME/.nvm" && \
     nvm alias default ${NODE_VERSION} && \
     nvm use default
 
-# Ensure NVM is available for all future shells
-RUN echo 'export NVM_DIR="$HOME/.nvm"' >> /home/www/.bashrc && \
-    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/www/.bashrc && \
-    echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /home/www/.bashrc
+# Bash completion does not work in one line docker compose exec commands, forcing the installation of symlinks
+USER root
+
+RUN ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/node /usr/local/bin/node && \
+    ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/npm /usr/local/bin/npm
 
 # Set the working directory
 WORKDIR /var/www
