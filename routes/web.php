@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -8,11 +10,13 @@ use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     Log::info('Welcome page visited');
+
     return view('welcome');
 });
 
 Route::get('/info', function () {
     Log::info('Phpinfo page visited');
+
     return phpinfo();
 });
 
@@ -25,7 +29,7 @@ Route::get('/health', function () {
         // Optionally, run a simple query
         DB::select('SELECT 1');
         $status['database'] = 'OK';
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $status['database'] = 'Error';
     }
 
@@ -38,7 +42,7 @@ Route::get('/health', function () {
         } else {
             $status['redis'] = 'Error';
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $status['redis'] = 'Error';
     }
 
@@ -54,7 +58,7 @@ Route::get('/health', function () {
         } else {
             $status['storage'] = 'Error';
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $status['storage'] = 'Error';
     }
 
