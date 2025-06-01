@@ -44,7 +44,6 @@ final class PostResource extends Resource
                     ->disk('public')
                     ->directory('thumbnails')
                     ->required(),
-                
                 TagsInput::make('tags')->required(),
                 Checkbox::make('is_published')->required(),
             ]);

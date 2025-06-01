@@ -11,6 +11,7 @@ namespace App\Models;
 use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Category
@@ -49,7 +50,12 @@ final class Category extends Model
         'slug',
     ];
 
-    public function posts()
+    /**
+     * Get the posts of the category
+     *
+     * @return HasMany<Post, $this>
+     */
+    public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
     }

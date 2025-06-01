@@ -14,7 +14,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/info', function () {
+Route::get('/info', function (): bool {
     Log::info('Phpinfo page visited');
 
     return phpinfo();
@@ -29,7 +29,7 @@ Route::get('/health', function () {
         // Optionally, run a simple query
         DB::select('SELECT 1');
         $status['database'] = 'OK';
-    } catch (Exception $e) {
+    } catch (Exception) {
         $status['database'] = 'Error';
     }
 
@@ -37,12 +37,8 @@ Route::get('/health', function () {
     try {
         Cache::store('redis')->put('health_check', 'OK', 10);
         $value = Cache::store('redis')->get('health_check');
-        if ($value === 'OK') {
-            $status['redis'] = 'OK';
-        } else {
-            $status['redis'] = 'Error';
-        }
-    } catch (Exception $e) {
+        $status['redis'] = $value === 'OK' ? 'OK' : 'Error';
+    } catch (Exception) {
         $status['redis'] = 'Error';
     }
 
@@ -53,19 +49,13 @@ Route::get('/health', function () {
         $content = Storage::get($testFile);
         Storage::delete($testFile);
 
-        if ($content === 'OK') {
-            $status['storage'] = 'OK';
-        } else {
-            $status['storage'] = 'Error';
-        }
-    } catch (Exception $e) {
+        $status['storage'] = $content === 'OK' ? 'OK' : 'Error';
+    } catch (Exception) {
         $status['storage'] = 'Error';
     }
 
     // Determine overall health status
-    $isHealthy = collect($status)->every(function ($value) {
-        return $value === 'OK';
-    });
+    $isHealthy = collect($status)->every(fn ($value): bool => $value === 'OK');
 
     $httpStatus = $isHealthy ? 200 : 503;
 

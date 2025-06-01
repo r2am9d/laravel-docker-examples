@@ -10,6 +10,7 @@ namespace App\Models;
 
 use App\Traits\HasUlid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Post
@@ -70,7 +71,12 @@ final class Post extends Model
         'category_id',
     ];
 
-    public function category()
+    /**
+     * Get the category of the post
+     *
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }

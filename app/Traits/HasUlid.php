@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 
 trait HasUlid
 {
-    public static function booted()
+    public static function booted(): void
     {
-        self::creating(function ($model) {
+        self::creating(function ($model): void {
             $model->id = Str::ulid();
         });
     }
