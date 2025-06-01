@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Models\User;
+use App\Filament\Resources\CategoryResource\Pages;
+use App\Models\Category;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,19 +13,18 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-final class UserResource extends Resource
+final class CategoryResource extends Resource
 {
-    protected static ?string $model = User::class;
+    protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'far-user';
+    protected static ?string $navigationIcon = 'far-tag';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')->required(),
-                TextInput::make('email')->required()->email(),
-                TextInput::make('password')->password()->revealable()->required(),
+                TextInput::make('slug')->required(),
             ]);
     }
 
@@ -33,17 +32,14 @@ final class UserResource extends Resource
     {
         return $table
             ->columns([
-                // TextColumn::make('id'),
                 TextColumn::make('name'),
-                TextColumn::make('email'),
+                TextColumn::make('slug'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -62,9 +58,9 @@ final class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListCategories::route('/'),
+            'create' => Pages\CreateCategory::route('/create'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 }
