@@ -9,6 +9,7 @@ ARG NODE_VERSION=22.0.0
 
 # Install system dependencies and build libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
     curl \
     unzip \
     libpq-dev \
@@ -76,7 +77,8 @@ RUN export NVM_DIR="$HOME/.nvm" && \
 USER root
 
 RUN ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/node /usr/local/bin/node && \
-    ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/npm /usr/local/bin/npm
+    ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/npm /usr/local/bin/npm \
+    git config --global --add safe.directory /var/www
 
 # Set the working directory
 WORKDIR /var/www
