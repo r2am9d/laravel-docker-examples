@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasUlid;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Post
@@ -23,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read Category $category
+ * @property-read Collection<int, User> $users
+ * @property-read int|null $users_count
  */
 final class Post extends Model
 {
@@ -30,9 +34,9 @@ final class Post extends Model
 
     public $incrementing = false;
 
-    protected $keyType = 'string';
-
     protected $table = 'posts';
+
+    protected $keyType = 'string';
 
     protected $casts = [
         'is_published' => 'bool',
@@ -58,5 +62,17 @@ final class Post extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the users of the post
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'posts_users')
+            ->withPivot(['order'])
+            ->withTimestamps();
     }
 }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasUlid;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -22,6 +24,8 @@ use Illuminate\Notifications\Notifiable;
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read Collection<int, Post> $posts
+ * @property-read int|null $posts_count
  */
 final class User extends Authenticatable
 {
@@ -33,15 +37,20 @@ final class User extends Authenticatable
 
     public $incrementing = false;
 
-    protected $keyType = 'string';
-
     protected $table = 'users';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $keyType = 'string';
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     protected $fillable = [
         'name',
         'email',
@@ -49,25 +58,14 @@ final class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Get the posts of the user
      *
-     * @var list<string>
+     * @return BelongsToMany<Post, $this>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function posts(): BelongsToMany
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsToMany(Post::class, 'posts_users')
+            ->withPivot(['order'])
+            ->withTimestamps();
     }
 }

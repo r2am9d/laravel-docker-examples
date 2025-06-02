@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
+use App\Filament\Resources\PostResource\RelationManagers\UsersRelationManager;
 use App\Models\Post;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -57,12 +59,20 @@ final class PostResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
-                Section::make('Tags')
+                Section::make('Meta')
                     ->collapsible()
                     ->schema([
                         TagsInput::make('tags')->required(),
                         Checkbox::make('is_published'),
                     ]),
+                // Section::make('Authors')
+                //     ->collapsible()
+                //     ->schema([
+                //         // Select::make('users')->multiple()
+                //         CheckboxList::make('users')
+                //             ->label('Authors')
+                //             ->relationship('users', 'name'),
+                //     ]),
             ]);
     }
 
@@ -116,7 +126,7 @@ final class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UsersRelationManager::class,
         ];
     }
 
