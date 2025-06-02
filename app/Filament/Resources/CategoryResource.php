@@ -32,14 +32,23 @@ final class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('slug'),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('slug')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
             ])
             ->filters([
                 //
             ])
+            ->actionsColumnLabel('Actions')
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

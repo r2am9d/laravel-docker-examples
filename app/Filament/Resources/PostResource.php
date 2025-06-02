@@ -11,6 +11,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -33,19 +34,35 @@ final class PostResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->required(),
-                TextInput::make('slug')->required(),
-                Select::make('category_id')
-                    ->label('Category')
-                    ->options(Category::all()->pluck('name', 'id')),
-                ColorPicker::make('color')->required(),
-                MarkdownEditor::make('content')->required(),
-                FileUpload::make('thumbnail')
-                    ->disk('public')
-                    ->directory('thumbnails')
-                    ->required(),
-                TagsInput::make('tags')->required(),
-                Checkbox::make('is_published')->required(),
+                Section::make('Media')
+                    ->collapsible()
+                    ->schema([
+                        FileUpload::make('thumbnail')
+                            ->disk('public')
+                            ->directory('thumbnails'),
+                    ]),
+                Section::make('Information')
+                    ->collapsible()
+                    ->schema([
+                        TextInput::make('title')
+                            ->required(),
+                        TextInput::make('slug')
+                            ->unique(ignoreRecord: true)
+                            ->required(),
+                        Select::make('category_id')
+                            ->label('Category')
+                            ->options(Category::all()->pluck('name', 'id')),
+                        ColorPicker::make('color')->required(),
+                        MarkdownEditor::make('content')->required()
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
+                Section::make('Tags')
+                    ->collapsible()
+                    ->schema([
+                        TagsInput::make('tags')->required(),
+                        Checkbox::make('is_published'),
+                    ]),
             ]);
     }
 
@@ -53,17 +70,37 @@ final class PostResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail'),
-                ColorColumn::make('color'),
-                TextColumn::make('title'),
+                ImageColumn::make('thumbnail')
+                    ->toggleable(),
+                ColorColumn::make('color')
+                    ->toggleable(),
+                TextColumn::make('title')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('category.name')
-                    ->label('Category'),
-                TextColumn::make('tags'),
-                CheckboxColumn::make('is_published'),
+                    ->label('Category')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('tags')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
+                CheckboxColumn::make('is_published')
+                    ->label('Published')
+                    ->toggleable(),
+                TextColumn::make('created_at')
+                    ->label('Published On')
+                    ->date()
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
             ])
             ->filters([
                 //
             ])
+            ->actionsColumnLabel('Actions')
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
