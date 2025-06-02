@@ -81,7 +81,8 @@
         "generate-phpdocs": [
             "php artisan clear-compiled",
             "php artisan ide-helper:generate",
-            "php artisan ide-helper:models --nowrite"
+            "php artisan ide-helper:models -RW",
+            "php artisan make:clean-docs"
         ],
         "refactor": [
             "@generate-phpdocs",
