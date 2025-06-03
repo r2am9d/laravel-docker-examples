@@ -24,10 +24,13 @@ artisan_run_migrations:
 npm_run_dev:
 	docker compose -f compose.dev.yaml exec -it workspace bash -c "npm install && npm run dev"
 
+pre_push:
+	docker compose -f compose.dev.yaml exec -it workspace bash -c "./bin/pre_push.sh"
+
 bash:
 	docker compose -f compose.dev.yaml run --rm workspace bash
 
-up: build_env composer up_nobuild artisan_run_migrations npm_run_dev
+up: build_env composer up_nobuild artisan_run_migrations npm_run_dev pre_push
 
 up_nobuild: install_artisan_encryption_key
 	docker compose -f compose.dev.yaml up -d --force-recreate --remove-orphans
