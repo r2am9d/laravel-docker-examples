@@ -78,6 +78,7 @@ USER root
 
 RUN ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/node /usr/local/bin/node && \
     ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/npm /usr/local/bin/npm && \
+    ln -sf /home/www/.nvm/versions/node/v22.0.0/bin/npx /usr/local/bin/npx && \
     git config --global --add safe.directory /var/www
 
 # Set the working directory
