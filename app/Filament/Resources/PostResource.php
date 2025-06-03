@@ -8,12 +8,12 @@ use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers\UsersRelationManager;
 use App\Models\Post;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -35,45 +35,42 @@ final class PostResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Media')
-                    ->collapsible()
-                    ->schema([
-                        FileUpload::make('thumbnail')
-                            ->disk('public')
-                            ->directory('thumbnails'),
-                    ]),
-                Section::make('Information')
-                    ->collapsible()
-                    ->schema([
-                        TextInput::make('title')
-                            ->required(),
-                        TextInput::make('slug')
-                            ->unique(ignoreRecord: true)
-                            ->required(),
-                        Select::make('category_id')
-                            ->label('Category')
-                            // ->searchable()
-                            ->relationship('category', 'name'),
-                        ColorPicker::make('color')->required(),
-                        MarkdownEditor::make('content')->required()
-                            ->columnSpanFull(),
-                    ])
-                    ->columns(2),
-                Section::make('Meta')
-                    ->collapsible()
-                    ->schema([
-                        TagsInput::make('tags')->required(),
-                        Checkbox::make('is_published'),
-                    ]),
-                // Section::make('Authors')
-                //     ->collapsible()
-                //     ->schema([
-                //         // Select::make('users')->multiple()
-                //         CheckboxList::make('users')
-                //             ->label('Authors')
-                //             ->relationship('users', 'name'),
-                //     ]),
-            ]);
+                Tabs::make()->tabs([
+                    Tab::make('Media')
+                        ->icon('far-image')
+                        // ->iconPosition(IconPosition::After)
+                        // ->badge('Badge')
+                        ->schema([
+                            FileUpload::make('thumbnail')
+                                ->disk('public')
+                                ->directory('thumbnails'),
+                        ]),
+                    Tab::make('Info')
+                        ->icon('far-circle-info')
+                        ->schema([
+                            TextInput::make('title')
+                                ->required(),
+                            TextInput::make('slug')
+                                ->unique(ignoreRecord: true)
+                                ->required(),
+                            Select::make('category_id')
+                                ->label('Category')
+                                // ->searchable()
+                                ->relationship('category', 'name'),
+                            ColorPicker::make('color')->required(),
+                            MarkdownEditor::make('content')->required()
+                                ->columnSpanFull(),
+                        ]),
+                    Tab::make('Tags')
+                        ->icon('far-tags')
+                        ->schema([
+                            TagsInput::make('tags')->required(),
+                            Checkbox::make('is_published'),
+                        ]),
+                ]),
+                // ->persistTabInQueryString()
+                // ->activeTab(2)
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table

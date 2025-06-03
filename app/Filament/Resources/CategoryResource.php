@@ -7,6 +7,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers\PostsRelationManager;
 use App\Models\Category;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -24,8 +25,12 @@ final class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('slug')->required(),
+                Section::make('Info')
+                    // ->collapsible()
+                    ->schema([
+                        TextInput::make('name')->required(),
+                        TextInput::make('slug')->required(),
+                    ]),
             ]);
     }
 
