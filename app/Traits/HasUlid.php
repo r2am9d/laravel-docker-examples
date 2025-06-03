@@ -11,7 +11,7 @@ trait HasUlid
     public static function booted(): void
     {
         self::creating(function ($model): void {
-            $model->id = Str::ulid();
+            $model->id = mb_strtolower((string) Str::ulid());
         });
     }
 }

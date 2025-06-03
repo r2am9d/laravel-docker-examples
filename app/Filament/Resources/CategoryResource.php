@@ -19,7 +19,7 @@ final class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'far-tag';
+    protected static ?string $navigationIcon = 'far-tags';
 
     public static function form(Form $form): Form
     {

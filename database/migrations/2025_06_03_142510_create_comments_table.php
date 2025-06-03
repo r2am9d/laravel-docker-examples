@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts_users', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignUlid('post_id')->constrained('posts')->cascadeOnDelete()->index();
+        Schema::create('comments', function (Blueprint $table): void {
+            $table->id()->primary();
             $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete()->index();
-            $table->integer('order')->default(0);
+            $table->ulidMorphs('commentable');
+            $table->string('comment');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts_users');
+        Schema::dropIfExists('comments');
     }
 };

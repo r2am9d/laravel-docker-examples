@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->json('tags')->nullable();
             $table->boolean('is_published')->default(false);
-            $table->foreignUlid('category_id')->constrained('categories')->cascadeOnDelete();
+            $table->foreignUlid('category_id')->constrained('categories')->cascadeOnDelete()->index();
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
+use App\Filament\Resources\PostResource\RelationManagers\CommentsRelationManager;
 use App\Filament\Resources\PostResource\RelationManagers\UsersRelationManager;
 use App\Models\Post;
 use Filament\Forms\Components\Checkbox;
@@ -162,6 +163,7 @@ final class PostResource extends Resource
     {
         return [
             UsersRelationManager::class,
+            CommentsRelationManager::class,
         ];
     }
 

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * Class Post
@@ -25,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read Category $category
+ * @property-read Collection<int, Comment> $comments
+ * @property-read int|null $comments_count
  * @property-read Collection<int, User> $users
  * @property-read int|null $users_count
  */
@@ -74,5 +77,15 @@ final class Post extends Model
         return $this->belongsToMany(User::class, 'posts_users')
             ->withPivot(['order'])
             ->withTimestamps();
+    }
+
+    /**
+     * Get comments of the post
+     *
+     * @return MorphMany<Comment, $this>
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }
