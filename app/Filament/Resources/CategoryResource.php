@@ -10,10 +10,13 @@ use App\Models\Category;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 final class CategoryResource extends Resource
 {
@@ -30,8 +33,13 @@ final class CategoryResource extends Resource
                 Section::make('Info')
                     // ->collapsible()
                     ->schema([
-                        TextInput::make('name')->required(),
-                        TextInput::make('slug')->required(),
+                        TextInput::make('name')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string $state, Set $set, Get $get, Category $category): void {
+                                $set('slug', Str::slug($state));
+                            })
+                            ->required(),
+                        TextInput::make('slug')->disabled()->readonly()->required(),
                     ]),
             ]);
     }
