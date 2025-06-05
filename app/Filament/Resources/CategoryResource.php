@@ -26,6 +26,12 @@ final class CategoryResource extends Resource
 
     // protected static bool $shouldSkipAuthorization = true;
 
+    // protected static ?string $modelLabel = '';
+
+    protected static ?string $navigationGroup = 'Blog';
+
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
