@@ -40,6 +40,21 @@ final class User extends Authenticatable implements FilamentUser
     use HasUlid;
     use Notifiable;
 
+    // Roles
+    public const ROLE_ADMIN = 'ADMIN';
+
+    public const ROLE_EDITOR = 'EDITOR';
+
+    public const ROLE_USER = 'USER';
+
+    public const ROLE_DEFAULT = self::ROLE_ADMIN;
+
+    public const ROLES = [
+        self::ROLE_ADMIN => 'Admin',
+        self::ROLE_EDITOR => 'Editor',
+        self::ROLE_USER => 'User',
+    ];
+
     public $incrementing = false;
 
     protected $table = 'users';
@@ -61,6 +76,33 @@ final class User extends Authenticatable implements FilamentUser
         'email',
         'password',
     ];
+
+    /**
+     * Check if current role if it is Admin
+     */
+    public function isAdmin(): bool
+    {
+        /** @phpstan-ignore-next-line */
+        return self::ROLE_DEFAULT === self::ROLE_ADMIN;
+    }
+
+    /**
+     * Check if current role if it is Editor
+     */
+    public function isEditor(): bool
+    {
+        /** @phpstan-ignore-next-line */
+        return self::ROLE_DEFAULT === self::ROLE_EDITOR;
+    }
+
+    /**
+     * Check if current role if it is User
+     */
+    public function isUser(): bool
+    {
+        /** @phpstan-ignore-next-line */
+        return self::ROLE_DEFAULT === self::ROLE_USER;
+    }
 
     /**
      * Get the posts of the user
@@ -86,9 +128,6 @@ final class User extends Authenticatable implements FilamentUser
 
     /**
      * Check if user can access panel
-     * 
-     * @param \Filament\Panel $panel
-     * @return bool
      */
     public function canAccessPanel(Panel $panel): bool
     {

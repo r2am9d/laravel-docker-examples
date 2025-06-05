@@ -14,23 +14,19 @@ final class ListPosts extends ListRecords
 {
     protected static string $resource = PostResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
-
     public function getTabs(): array
     {
         return [
             'All' => Tab::make(),
-            'Published' => Tab::make()->modifyQueryUsing(function (Builder $query) {
-                return $query->where('is_published', true);
-            }),
-            'Unpublished' => Tab::make()->modifyQueryUsing(function (Builder $query) {
-                return $query->where('is_published', false);
-            }),
+            'Published' => Tab::make()->modifyQueryUsing(fn (Builder $query) => $query->where('is_published', true)),
+            'Unpublished' => Tab::make()->modifyQueryUsing(fn (Builder $query) => $query->where('is_published', false)),
+        ];
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
         ];
     }
 }

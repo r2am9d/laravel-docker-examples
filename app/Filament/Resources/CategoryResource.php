@@ -21,6 +21,8 @@ final class CategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'far-tags';
 
+    // protected static bool $shouldSkipAuthorization = true;
+
     public static function form(Form $form): Form
     {
         return $form
