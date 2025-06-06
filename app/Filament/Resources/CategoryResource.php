@@ -28,6 +28,8 @@ final class CategoryResource extends Resource
 
     // protected static ?string $modelLabel = '';
 
+    // protected static ?string $navigationParentItem = 'Posts';
+
     protected static ?string $navigationGroup = 'Blog';
 
     protected static ?int $navigationSort = 1;
