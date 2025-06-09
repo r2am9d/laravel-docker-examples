@@ -49,13 +49,13 @@ final class Dashboard extends \Filament\Pages\Dashboard
                 )
                 ->footerActionsAlignment(Alignment::Right)
                 ->footerActions([
-                        Action::make('resetFilters')
-                            ->label('Reset Filters')
-                            ->color('success')
-                            ->icon('far-rotate-right')
-                            // ->iconPosition(IconPosition::After)
-                            ->action(fn () => $this->resetFilters()),
-                    ])
+                    Action::make('resetFilters')
+                        ->label('Reset Filters')
+                        ->color('success')
+                        ->icon('far-rotate-right')
+                        // ->iconPosition(IconPosition::After)
+                        ->action(fn () => $this->resetFilters()),
+                ])
                 ->columns(3),
         ]);
     }

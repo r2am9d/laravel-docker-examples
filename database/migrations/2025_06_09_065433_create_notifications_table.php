@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts_users', function (Blueprint $table): void {
-            $table->id()->primary();
-            $table->foreignUlid('post_id')->constrained('posts')->cascadeOnDelete()->index();
-            $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete()->index();
-            $table->integer('order')->default(0);
+        Schema::create('notifications', function (Blueprint $table): void {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->ulidMorphs('notifiable');
+            $table->json('data');
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts_users');
+        Schema::dropIfExists('notifications');
     }
 };

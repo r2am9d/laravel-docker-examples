@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts_users', function (Blueprint $table): void {
+        Schema::create('failed_import_rows', function (Blueprint $table): void {
             $table->id()->primary();
-            $table->foreignUlid('post_id')->constrained('posts')->cascadeOnDelete()->index();
-            $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete()->index();
-            $table->integer('order')->default(0);
+            $table->json('data');
+            $table->foreignId('import_id')->constrained()->cascadeOnDelete()->index();
+            $table->text('validation_error')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts_users');
+        Schema::dropIfExists('failed_import_rows');
     }
 };
