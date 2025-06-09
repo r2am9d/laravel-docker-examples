@@ -58,12 +58,11 @@ final class CategoryResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->badge()
-                    ->color(function (string $state): string {
-                        return match ($state) {
-                            'Laravel' => 'danger',
-                            'PHP' => 'info',
-                            'Pint' => 'success',
-                        };
+                    ->color(fn (string $state): string => match ($state) {
+                        'Laravel' => 'danger',
+                        'PHP' => 'info',
+                        'Pint' => 'success',
+                        default => '',
                     })
                     ->sortable()
                     ->searchable()

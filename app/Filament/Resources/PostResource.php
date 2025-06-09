@@ -139,14 +139,14 @@ final class PostResource extends Resource
                         DatePicker::make('created_until')
                             ->label('Created Until'),
                     ])
-                    ->query(fn(Builder $query, array $data): Builder => $query
+                    ->query(fn (Builder $query, array $data): Builder => $query
                         ->when(
                             $data['created_from'],
-                            fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                         )
                         ->when(
                             $data['created_until'],
-                            fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                         )),
             ], FiltersLayout::AboveContent)
             // ->hiddenFilterIndicators()
