@@ -18,4 +18,11 @@ final class EditUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return UserResource::getUrl('view', [
+            'record' => $this->record->getKey(),
+        ]);
+    }
 }
