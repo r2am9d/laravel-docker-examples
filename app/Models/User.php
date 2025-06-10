@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\HasUlid;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -32,28 +30,13 @@ use Illuminate\Notifications\Notifiable;
  * @property-read Collection<int, Post> $posts
  * @property-read int|null $posts_count
  */
-final class User extends Authenticatable implements FilamentUser
+final class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
 
     use HasUlid;
     use Notifiable;
-
-    // Roles
-    public const ROLE_ADMIN = 'ADMIN';
-
-    public const ROLE_EDITOR = 'EDITOR';
-
-    public const ROLE_USER = 'USER';
-
-    public const ROLE_DEFAULT = self::ROLE_ADMIN;
-
-    public const ROLES = [
-        self::ROLE_ADMIN => 'Admin',
-        self::ROLE_EDITOR => 'Editor',
-        self::ROLE_USER => 'User',
-    ];
 
     public $incrementing = false;
 
@@ -78,33 +61,6 @@ final class User extends Authenticatable implements FilamentUser
     ];
 
     /**
-     * Check if current role if it is Admin
-     */
-    public function isAdmin(): bool
-    {
-        /** @phpstan-ignore-next-line */
-        return self::ROLE_DEFAULT === self::ROLE_ADMIN;
-    }
-
-    /**
-     * Check if current role if it is Editor
-     */
-    public function isEditor(): bool
-    {
-        /** @phpstan-ignore-next-line */
-        return self::ROLE_DEFAULT === self::ROLE_EDITOR;
-    }
-
-    /**
-     * Check if current role if it is User
-     */
-    public function isUser(): bool
-    {
-        /** @phpstan-ignore-next-line */
-        return self::ROLE_DEFAULT === self::ROLE_USER;
-    }
-
-    /**
      * Get the posts of the user
      *
      * @return BelongsToMany<Post, $this>
@@ -124,14 +80,5 @@ final class User extends Authenticatable implements FilamentUser
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
-    }
-
-    /**
-     * Check if user can access panel
-     */
-    public function canAccessPanel(Panel $panel): bool
-    {
-        // Defaulted true in staging but config is needed in prod
-        return true;
     }
 }
