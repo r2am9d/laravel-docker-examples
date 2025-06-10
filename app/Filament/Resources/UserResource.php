@@ -44,11 +44,17 @@ final class UserResource extends Resource
             ->filters([
                 //
             ])
+            ->actionsColumnLabel('Actions')
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->icon('far-eye'),
+                Tables\Actions\EditAction::make()
+                    ->icon('far-pen-to-square'),
+                Tables\Actions\DeleteAction::make()
+                    ->icon('far-trash'),
             ])
+            // ->recordAction(ViewAction::class)
+            // ->recordUrl(null)
             ->headerActions([
                 ExportAction::make()
                     ->exporter(UserExporter::class),
@@ -76,6 +82,7 @@ final class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
+            'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

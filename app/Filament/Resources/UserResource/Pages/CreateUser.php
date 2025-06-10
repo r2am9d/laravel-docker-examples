@@ -10,4 +10,11 @@ use Filament\Resources\Pages\CreateRecord;
 final class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return UserResource::getUrl('view', [
+            'record' => $this->record->getKey(),
+        ]);
+    }
 }
