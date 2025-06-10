@@ -80,4 +80,10 @@ logs_tail: build_env
 docker_clean:
 	docker ps -q | xargs -r docker stop && \
 	docker ps -aq | xargs -r docker rm && \
-	docker images -q | xargs -r docker rmi -f
+	docker images -q | xargs -r docker rmi -f && \
+	docker network ls --filter "type=custom" -q | xargs -r docker network rm && \
+	for vol in $$(docker volume ls -q); do \
+		if [ "$$(docker volume inspect -f '{{.Scope}}' $$vol)" = "local" ]; then \
+			docker volume rm $$vol; \
+		fi; \
+	done
