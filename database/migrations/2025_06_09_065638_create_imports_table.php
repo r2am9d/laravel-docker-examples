@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedInteger('processed_rows')->default(0);
             $table->unsignedInteger('total_rows');
             $table->unsignedInteger('successful_rows')->default(0);
-            $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete()->index();
+            $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

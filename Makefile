@@ -78,12 +78,41 @@ logs_tail: build_env
 # ---------- CLEANUP ----------
 
 docker_clean:
-	docker ps -q | xargs -r docker stop && \
-	docker ps -aq | xargs -r docker rm && \
-	docker images -q | xargs -r docker rmi -f && \
-	docker network ls --filter "type=custom" -q | xargs -r docker network rm && \
+	@echo "Stopping all containers (except registry-cache)..."
+	@for id in $$(docker ps -q); do \
+		name=$$(docker inspect -f '{{.Name}}' $$id 2>/dev/null | sed 's|^/||'); \
+		if [ "$$name" != "registry-cache" ]; then \
+			docker stop $$id; \
+		fi; \
+	done && \
+	echo "Removing all containers (except registry-cache)..." && \
+	for id in $$(docker ps -aq); do \
+		name=$$(docker inspect -f '{{.Name}}' $$id 2>/dev/null | sed 's|^/||'); \
+		if [ "$$name" != "registry-cache" ]; then \
+			docker rm $$id; \
+		fi; \
+	done && \
+	echo "Removing all images (except registry:2)..." && \
+	for img in $$(docker images -q); do \
+		tags=$$(docker inspect -f '{{join .RepoTags ","}}' $$img 2>/dev/null); \
+		if ! echo "$$tags" | grep -q "registry:2"; then \
+			docker rmi -f $$img || true; \
+		fi; \
+	done && \
+	echo "Removing all user-created networks (excluding defaults and registry-cache)..." && \
+	for net in $$(docker network ls --filter "type=custom" -q); do \
+		name=$$(docker network inspect -f '{{.Name}}' $$net 2>/dev/null); \
+		attached=$$(docker network inspect -f '{{range .Containers}}{{.Name}} {{end}}' $$net); \
+		if [ "$$name" != "bridge" ] && [ "$$name" != "host" ] && [ "$$name" != "none" ] && [ "$$name" != "registry-cache" ] && echo "$$attached" | grep -vq "registry-cache"; then \
+			docker network rm $$net; \
+		fi; \
+	done && \
+	echo "Removing all user-created local volumes (excluding those in use and registry-cache)..." && \
 	for vol in $$(docker volume ls -q); do \
-		if [ "$$(docker volume inspect -f '{{.Scope}}' $$vol)" = "local" ]; then \
+		name=$$(docker volume inspect -f '{{.Name}}' $$vol 2>/dev/null); \
+		scope=$$(docker volume inspect -f '{{.Scope}}' $$vol 2>/dev/null); \
+		in_use=$$(docker ps -a --filter volume=$$name -q); \
+		if [ "$$name" != "registry-cache" ] && [ "$$scope" = "local" ] && [ -z "$$in_use" ]; then \
 			docker volume rm $$vol; \
 		fi; \
 	done

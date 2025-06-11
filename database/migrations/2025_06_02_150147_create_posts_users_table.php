@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('posts_users', function (Blueprint $table): void {
             $table->id()->primary();
-            $table->foreignUlid('post_id')->constrained('posts')->cascadeOnDelete()->index();
-            $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete()->index();
+            $table->foreignUlid('post_id')->constrained()->cascadeOnDelete();
+            $table->foreignUlid('user_id')->constrained()->cascadeOnDelete();
             $table->integer('order')->default(0);
             $table->timestamps();
         });

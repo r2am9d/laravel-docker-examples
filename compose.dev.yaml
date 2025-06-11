@@ -88,29 +88,19 @@ services:
     networks:
       - laravel-development
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: dbeaver
     user: root
-    volumes:
-      - ./docker/development/pgadmin/servers.json:/pgadmin4/servers.json
     depends_on:
       - postgres
     ports:
-      - "8080:80"
+      - "8978:8978"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
-      PGADMIN_DISABLE_POSTFIX: 'True'
-    entrypoint: >
-      /bin/sh -c "
-      echo postgres:5432:app:laravel:secret > /var/lib/pgadmin/pg.pass;
-      chown pgadmin:root /var/lib/pgadmin/pg.pass;
-      chmod 600 /var/lib/pgadmin/pg.pass;
-      /entrypoint.sh
-      "
+      - CB_ADMIN_NAME=cbadmin
+      - CB_ADMIN_PASSWORD=Cbadmin8978
+    volumes:
+      - dbeaver-data-development:/var/lib/dbeaver/data
     networks:
       - laravel-development
 
@@ -125,3 +115,4 @@ networks:
 
 volumes:
   postgres-data-development:
+  dbeaver-data-development:
